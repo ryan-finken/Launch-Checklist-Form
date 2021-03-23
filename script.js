@@ -4,7 +4,7 @@
 function isNotAlpha(str) {
    for (let i = 0; i < str.length; i++) {
       // found this neat trick online, wish I could take credit for it
-      if (str[i].toLowerCase() == str[i].toUpperCase()) {
+      if (str[i].toLowerCase() === str[i].toUpperCase()) {
          return true;
       }
    }
