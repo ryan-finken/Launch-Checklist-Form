@@ -22,13 +22,15 @@ window.addEventListener('load', function (event) {
    //          const pilotName = doc...('pilotName');
    //          const copilotName = doc...('copilotName');
    //          etc.
-   //       would that look better/make more sense/conform to professional standards?  
+   //       would that look better/make more sense/conform to professional standards?
+
+   // on page load, get planetary json array, randomly select and display a destination
    let url = 'https://handlers.education.launchcode.org/static/planets.json';
    fetch(url).then(function (response) {
       response.json().then(function (json) {
          // ??? does missionTarget really need a name here? I only use it once.
          let missionTarget = document.getElementById('missionTarget');
-         let planet = Math.floor(Math.random() * json.length);
+         let planet = Math.floor(Math.random() * json.length); // randomly selected planet
          missionTarget.innerHTML = `
          <h2>Mission Destination</h2>
          <ol>
