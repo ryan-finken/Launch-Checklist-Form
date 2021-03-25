@@ -5,10 +5,10 @@
 
 // isNotAlpha checks pilot/copilot names for bad input (non-letter characters)
 // ??? is this the best place for this function?
-function isNotAlpha(str) {
-   for (let i = 0; i < str.length; i++) {
+function isNotAlpha(string) {
+   for (character of string) {
       // found this neat trick online, wish I could take credit for it
-      if (str[i].toLowerCase() === str[i].toUpperCase()) {
+      if (character.toLowerCase() === character.toUpperCase()) {
          return true;
       }
    }
