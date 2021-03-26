@@ -36,12 +36,8 @@ window.addEventListener('load', function () {
       const copilotName = document.querySelector('input[name=copilotName]');
       const fuelLevel = document.querySelector('input[name=fuelLevel]');
       const cargoMass = document.querySelector('input[name=cargoMass]');
-      if ( // check for empty fields
-         !pilotName.value ||
-         !copilotName.value ||
-         !fuelLevel.value ||
-         !cargoMass.value
-      ) {
+      // check for empty fields
+      if (!pilotName.value || !copilotName.value || !fuelLevel.value || !cargoMass.value) {
          alert('All fields must have an entry.');
       } else if (isNotAlpha(pilotName.value)) { // check text input for non-letters
          alert('Pilot name must only contain letters in the alphabet.');
@@ -59,7 +55,7 @@ window.addEventListener('load', function () {
          document.getElementById('copilotStatus').innerHTML = `
             Co-pilot ${copilotName.value} is ready for launch
          `;
-         // next, check if ready for launch
+         // check if ready for launch
          const faultyItems = document.getElementById('faultyItems');
          const launchStatus = document.getElementById('launchStatus');
          if (fuelLevel.value < 10000) {
