@@ -1,37 +1,10 @@
-// ???   if a user supplies valid input but has fuel level or cargo mass
-//       too low, they can then give numbers in the proper range and
-//       submit the form again. should the faultyItems div become hidden
-//       again when this happens?
-
-// isNotAlpha checks pilot/copilot names for bad input (non-letter characters)
-// ??? is this the best place for this function?
-function isNotAlpha(string) {
-   for (character of string) {
-      // found this neat trick online, wish I could take credit for it
-      if (character.toLowerCase() === character.toUpperCase()) {
-         return true;
-      }
-   }
-   return false;
-}
-
-//  ??? gave event argument a name, even if I don't use it. Is this a good practice?
-window.addEventListener('load', function (event) {
-   //  ???  considering making all my document object variables constants and putting them here. eg:
-   //          const launchForm = doc...('launchForm);
-   //          const pilotName = doc...('pilotName');
-   //          const copilotName = doc...('copilotName');
-   //          etc.
-   //       would that look better/make more sense/conform to professional standards?
-
+window.addEventListener('load', function () {
    // on page load, get planetary json array, randomly select and display a destination
-   let url = 'https://handlers.education.launchcode.org/static/planets.json';
-   fetch(url).then(function (response) {
+   const planetsURL = 'https://handlers.education.launchcode.org/static/planets.json';
+   fetch(planetsURL).then(function (response) {
       response.json().then(function (json) {
-         // ??? does missionTarget really need a name here? I only use it once.
-         let missionTarget = document.getElementById('missionTarget');
-         let planet = Math.floor(Math.random() * json.length); // randomly selected planet
-         missionTarget.innerHTML = `
+         const planet = Math.floor(Math.random() * json.length); // randomly selected planet
+         document.getElementById('missionTarget').innerHTML = `
          <h2>Mission Destination</h2>
          <ol>
             <li>Name: ${json[planet].name}</li>
@@ -44,13 +17,25 @@ window.addEventListener('load', function (event) {
          `;
       });
    });
-   let launchForm = document.getElementById('launchForm');
-   launchForm.addEventListener('submit', function (event) {
+
+   // destination is set. next, get/validate input from user
+   document.getElementById('launchForm').addEventListener('submit', function (event) {
+      // prevent form send/page refresh
       event.preventDefault();
-      let pilotName = document.querySelector('input[name=pilotName]');
-      let copilotName = document.querySelector('input[name=copilotName]');
-      let fuelLevel = document.querySelector('input[name=fuelLevel]');
-      let cargoMass = document.querySelector('input[name=cargoMass]');
+      // isNotAlpha will check pilot/copilot name for non-letter characters
+      function isNotAlpha(string) {
+         for (character of string) {
+            if (character.toLowerCase() === character.toUpperCase()) {
+               // eg: '%'.toLowerCase and '%'.toUpperCase both return '%'
+               return true;
+            }
+         }
+         return false;
+      }
+      const pilotName = document.querySelector('input[name=pilotName]');
+      const copilotName = document.querySelector('input[name=copilotName]');
+      const fuelLevel = document.querySelector('input[name=fuelLevel]');
+      const cargoMass = document.querySelector('input[name=cargoMass]');
       if ( // check for empty fields
          !pilotName.value ||
          !copilotName.value ||
@@ -67,32 +52,31 @@ window.addEventListener('load', function (event) {
       } else if (isNaN(cargoMass.value)) {
          alert('Cargo mass must be a number.');
       } else {
-         // user supplied text for both names and numbers for fuel level
-         // and cargo mass. next, check if ship ready for launch
-         let faultyItems = document.getElementById('faultyItems');
-         let pilotStatus = document.getElementById('pilotStatus');
-         let copilotStatus = document.getElementById('copilotStatus');
-         let launchStatus = document.getElementById('launchStatus');
-         pilotStatus.innerHTML = `Pilot ${pilotName.value} is ready for launch`;
-         copilotStatus.innerHTML = `Co-pilot ${copilotName.value} is ready for launch`;
+         // names are all text, cargoMass/fuelLevel are numbers
+         document.getElementById('pilotStatus').innerHTML = `
+            Pilot ${pilotName.value} is ready for launch
+         `;
+         document.getElementById('copilotStatus').innerHTML = `
+            Co-pilot ${copilotName.value} is ready for launch
+         `;
+         // next, check if ready for launch
+         const faultyItems = document.getElementById('faultyItems');
+         const launchStatus = document.getElementById('launchStatus');
          if (fuelLevel.value < 10000) {
             faultyItems.style.visibility = 'visible';
-            let fuelStatus = document.getElementById('fuelStatus');
-            fuelStatus.innerHTML = 'Fuel level too low for launch';
+            document.getElementById('fuelStatus').innerHTML = 'Fuel level too low for launch';
             launchStatus.innerHTML = 'Shuttle Not Ready for Launch';
             launchStatus.style.color = 'red';
          } else if (cargoMass.value > 10000) {
             faultyItems.style.visibility = 'visible';
-            let cargoStatus = document.getElementById('cargoStatus');
-            cargoStatus.innerHTML = 'Cargo mass too high for launch';
+            document.getElementById('cargoStatus').innerHTML = 'Cargo mass too high for launch';
             launchStatus.innerHTML = 'Shuttle Not Ready for Launch';
             launchStatus.style.color = 'red';
          } else { // fuel level is high enough, cargo level low enough. let's go!
-            // ???   should I make faultyItems invisible here?
-            //  if it's to remain visible, should I at least change fuelStatus
-            //  and cargoStatus to reflect they are ready for launch?
             launchStatus.innerHTML = 'Shuttle is ready for launch';
             launchStatus.style.color = 'green';
+            // making faultyItems hidden again in case user fixed their bad input
+            faultyItems.style.visibility = 'hidden';
          }
       }
    });
